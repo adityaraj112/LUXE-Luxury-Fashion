@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist — LUXE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css"><link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<div id="navbar-mount"></div>
+<main class="page-wrapper">
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Wishlist</span></nav>
+      <h1>Your Wishlist</h1>
+    </div>
+  </div>
+  <div class="container" style="padding-bottom:var(--spacing-4xl)">
+    <div id="wishlist-content"></div>
+  </div>
+</main>
+<div id="footer-mount"></div>
+<script src="js/products.js"></script><script src="js/cart.js"></script><script src="js/ui.js"></script><script src="js/layout.js"></script>
+<script>
+function renderWishlist() {
+  const ids = Wishlist.getWishlist();
+  const content = document.getElementById('wishlist-content');
+  if (!ids.length) {
+    content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">♥</div><h3>Your Wishlist is Empty</h3><p>Save items you love and find them here later.</p><a href="shop.html" class="btn btn-primary btn-lg">Explore Collections</a></div>`;
+    return;
+  }
+  const wishlistProducts = ids.map(id => products.find(p => p.id === id)).filter(Boolean);
+  content.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--spacing-xl)">
+      <p style="color:var(--color-text-muted)">${wishlistProducts.length} saved item${wishlistProducts.length!==1?'s':''}</p>
+      <button class="btn btn-secondary btn-sm" onclick="moveAllToCart()">Move All to Cart</button>
+    </div>
+    <div class="product-grid">
+      ${wishlistProducts.map(p => `
+        <div class="product-card">
+          <div class="product-card-image">
+            <a href="product.html?id=${p.id}"><img src="${p.images[0]}" alt="${p.name}" loading="lazy"></a>
+            ${p.badge ? `<span class="product-card-badge badge-${p.badge}">${p.badge}</span>` : ''}
+          </div>
+          <div class="product-card-body">
+            <div class="product-card-category">${p.category}</div>
+            <h3 class="product-card-name"><a href="product.html?id=${p.id}">${p.name}</a></h3>
+            <div class="product-card-price">
+              <span class="price-current">${formatPrice(p.price)}</span>
+              ${p.originalPrice ? `<span class="price-original">${formatPrice(p.originalPrice)}</span>` : ''}
+            </div>
+            <div class="product-card-rating"><span class="stars">${renderStars(p.rating)}</span><span>${p.rating}</span></div>
+          </div>
+          <div class="product-card-actions">
+            <button class="btn btn-primary btn-sm" style="flex:1" onclick="moveToCart(${p.id})">Move to Cart</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="removeFromWL(${p.id})" aria-label="Remove">✕</button>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+function moveToCart(id) {
+  const p = products.find(p => p.id === id);
+  if (!p) return;
+  Cart.addToCart(id, p.sizes[0], p.colors[0], 1);
+  Wishlist.removeFromWishlist(id);
+  renderWishlist();
+}
+function moveAllToCart() {
+  Wishlist.getWishlist().forEach(id => {
+    const p = products.find(p => p.id === id);
+    if (p) Cart.addToCart(id, p.sizes[0], p.colors[0], 1);
+  });
+  localStorage.removeItem('luxe_wishlist');
+  showToast('All items moved to cart!', 'success', '🛒');
+  renderWishlist();
+}
+function removeFromWL(id) {
+  Wishlist.removeFromWishlist(id);
+  renderWishlist();
+}
+document.addEventListener('DOMContentLoaded', renderWishlist);
+</script>
+</body>
+</html>

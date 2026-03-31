@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — LUXE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css"><link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<div id="navbar-mount"></div>
+<main class="page-wrapper">
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Shop</span></nav>
+      <h1 id="page-title">All Products</h1>
+      <p id="page-subtitle">Explore our full collection</p>
+    </div>
+  </div>
+  <div class="container" style="padding-bottom:var(--spacing-4xl)">
+    <!-- Toolbar -->
+    <div class="shop-toolbar">
+      <label class="search-bar" for="product-search" aria-label="Search products">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="search" id="product-search" placeholder="Search products..." aria-label="Search products">
+      </label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span id="results-count" style="font-size:0.82rem;color:var(--color-text-dim);white-space:nowrap"></span>
+        <select class="form-select" id="sort-select" style="width:auto" aria-label="Sort products">
+          <option value="newest">Newest</option>
+          <option value="bestseller">Best Seller</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="shop-layout">
+      <!-- Sidebar -->
+      <aside class="shop-sidebar" aria-label="Product filters">
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Categories</h2>
+          <div style="display:flex;flex-direction:column;gap:10px" id="category-filters">
+            <label class="checkbox-label"><input type="checkbox" value="Women"><span class="checkmark"></span>Women <span style="margin-left:auto;color:var(--color-text-dim);font-size:0.8rem">7</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="Men"><span class="checkmark"></span>Men <span style="margin-left:auto;color:var(--color-text-dim);font-size:0.8rem">7</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="Accessories"><span class="checkmark"></span>Accessories <span style="margin-left:auto;color:var(--color-text-dim);font-size:0.8rem">6</span></label>
+            <label class="checkbox-label"><input type="checkbox" value="Sale"><span class="checkmark"></span>Sale <span style="margin-left:auto;color:var(--color-text-dim);font-size:0.8rem">5</span></label>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Price Range</h2>
+          <div style="margin-bottom:12px;display:flex;justify-content:space-between;font-size:0.85rem;color:var(--color-text-muted)">
+            <span id="price-min-label">₹0</span><span id="price-max-label">₹20000</span>
+          </div>
+          <input type="range" class="range-slider" id="price-range" min="0" max="2000" value="2000" step="10" aria-label="Maximum price">
+        </div>
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Min Rating</h2>
+          <div style="display:flex;flex-direction:column;gap:8px" id="rating-filters">
+            <label class="radio-label"><input type="radio" name="rating" value="0" checked><span class="radiomark"></span>All Ratings</label>
+            <label class="radio-label"><input type="radio" name="rating" value="4.5"><span class="radiomark"></span><span style="color:var(--color-gold)">★★★★★</span> 4.5+</label>
+            <label class="radio-label"><input type="radio" name="rating" value="4"><span class="radiomark"></span><span style="color:var(--color-gold)">★★★★</span>☆ 4.0+</label>
+            <label class="radio-label"><input type="radio" name="rating" value="3"><span class="radiomark"></span><span style="color:var(--color-gold)">★★★</span>☆☆ 3.0+</label>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <h2 class="sidebar-title">Filter by Tag</h2>
+          <div style="display:flex;flex-wrap:wrap;gap:8px" id="badge-filters">
+            <button class="btn btn-secondary btn-sm" data-badge="new">New</button>
+            <button class="btn btn-secondary btn-sm" data-badge="sale">Sale</button>
+            <button class="btn btn-secondary btn-sm" data-badge="bestseller">Best Seller</button>
+            <button class="btn btn-secondary btn-sm" data-badge="limited">Limited</button>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-full btn-sm" id="clear-filters">Clear All Filters</button>
+      </aside>
+
+      <!-- Product Grid -->
+      <section aria-label="Product grid">
+        <div id="product-grid" class="product-grid"></div>
+        <div id="empty-state" class="empty-state" style="display:none">
+          <div class="empty-state-icon">🔍</div>
+          <h3>No Products Found</h3>
+          <p>Try adjusting your filters or search terms.</p>
+          <button class="btn btn-ghost" id="reset-filters-btn">Clear Filters</button>
+        </div>
+        <div class="pagination" id="pagination" aria-label="Page navigation"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<div id="footer-mount"></div>
+<script src="js/products.js"></script><script src="js/cart.js"></script><script src="js/ui.js"></script><script src="js/layout.js"></script>
+<script>
+const ITEMS_PER_PAGE = 9;
+let currentPage = 1;
+let filteredProducts = [...products];
+let activeBadge = null;
+
+function applyFiltersAndRender() {
+  let filtered = Filter.filter(products);
+  if (activeBadge) filtered = filtered.filter(p => p.badge === activeBadge);
+  filteredProducts = filtered;
+  currentPage = 1;
+  renderPage();
+}
+
+function renderPage() {
+  const grid = document.getElementById('product-grid');
+  const emptyState = document.getElementById('empty-state');
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const pageItems = filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+
+  document.getElementById('results-count').textContent = `${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
+
+  if (pageItems.length === 0) {
+    grid.innerHTML = '';
+    emptyState.style.display = 'block';
+  } else {
+    emptyState.style.display = 'none';
+    grid.innerHTML = pageItems.map(renderProductCard).join('');
+    // Animate in
+    grid.querySelectorAll('.product-card').forEach((el, i) => {
+      el.style.opacity = '0'; el.style.transform = 'translateY(16px)';
+      el.style.transition = `opacity 0.4s ${i*0.05}s ease, transform 0.4s ${i*0.05}s ease`;
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'none'; }, 10);
+    });
+  }
+  renderPagination();
+  Wishlist.updateButtons();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const pg = document.getElementById('pagination');
+  if (total <= 1) { pg.innerHTML = ''; return; }
+  let html = '';
+  if (currentPage > 1) html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})">‹</button>`;
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || Math.abs(i - currentPage) <= 1)
+      html += `<button class="page-btn${i === currentPage ? ' active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    else if (Math.abs(i - currentPage) === 2)
+      html += `<span style="padding:0 4px;color:var(--color-text-dim)">…</span>`;
+  }
+  if (currentPage < total) html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})">›</button>`;
+  pg.innerHTML = html;
+}
+
+function goToPage(n) {
+  currentPage = n;
+  renderPage();
+  window.scrollTo({ top: 300, behavior: 'smooth' });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // URL params
+  const params = new URLSearchParams(window.location.search);
+  const cat = params.get('cat');
+  if (cat) {
+    const cb = document.querySelector(`#category-filters input[value="${cat}"]`);
+    if (cb) { cb.checked = true; Filter.setCategory(cat, true); }
+    document.getElementById('page-title').textContent = cat;
+    document.getElementById('page-subtitle').textContent = `Explore our ${cat.toLowerCase()} collection`;
+  }
+
+  // Search
+  document.getElementById('product-search').addEventListener('input', e => Filter.setSearch(e.target.value));
+
+  // Sort
+  document.getElementById('sort-select').addEventListener('change', e => Filter.setSort(e.target.value));
+
+  // Category checkboxes
+  document.querySelectorAll('#category-filters input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', () => Filter.setCategory(cb.value, cb.checked));
+  });
+
+  // Price range
+  const priceRange = document.getElementById('price-range');
+  priceRange.addEventListener('input', () => {
+    document.getElementById('price-max-label').textContent = '$' + priceRange.value;
+    Filter.setPrice(0, parseInt(priceRange.value));
+  });
+
+  // Rating
+  document.querySelectorAll('#rating-filters input[type=radio]').forEach(r => {
+    r.addEventListener('change', () => Filter.setRating(parseFloat(r.value)));
+  });
+
+  // Badge filters
+  document.querySelectorAll('[data-badge]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const badge = btn.dataset.badge;
+      if (activeBadge === badge) { activeBadge = null; btn.classList.remove('btn-primary'); btn.classList.add('btn-secondary'); }
+      else {
+        activeBadge = badge;
+        document.querySelectorAll('[data-badge]').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-secondary'); });
+        btn.classList.add('btn-primary'); btn.classList.remove('btn-secondary');
+      }
+      applyFiltersAndRender();
+    });
+  });
+
+  // Clear filters
+  const clearFilters = () => {
+    Filter.state = { search: '', categories: [], minPrice: 0, maxPrice: 2000, rating: 0, sort: 'newest' };
+    activeBadge = null;
+    document.getElementById('product-search').value = '';
+    document.getElementById('sort-select').value = 'newest';
+    document.querySelectorAll('#category-filters input').forEach(c => c.checked = false);
+    priceRange.value = 2000;
+    document.getElementById('price-max-label').textContent = '$2000';
+    document.querySelector('#rating-filters input[value="0"]').checked = true;
+    document.querySelectorAll('[data-badge]').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-secondary'); });
+    applyFiltersAndRender();
+  };
+  document.getElementById('clear-filters').addEventListener('click', clearFilters);
+  document.getElementById('reset-filters-btn')?.addEventListener('click', clearFilters);
+
+  // Listen for filter events
+  window.addEventListener('filterChanged', applyFiltersAndRender);
+
+  // Initial render
+  applyFiltersAndRender();
+});
+</script>
+</body>
+</html>

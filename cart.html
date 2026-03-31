@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart — LUXE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css"><link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<div id="navbar-mount"></div>
+<main class="page-wrapper">
+  <div class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><a href="index.html">Home</a><span class="breadcrumb-sep">›</span><span>Shopping Cart</span></nav>
+      <h1>Your Cart</h1>
+    </div>
+  </div>
+  <div class="container" style="padding-bottom:var(--spacing-4xl)">
+    <div id="cart-content"></div>
+  </div>
+</main>
+<div id="footer-mount"></div>
+<script src="js/products.js"></script><script src="js/cart.js"></script><script src="js/ui.js"></script><script src="js/layout.js"></script>
+<script>
+function renderCart() {
+  const cartItems = Cart.getCart();
+  const content = document.getElementById('cart-content');
+  if (!cartItems.length) {
+    content.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">🛒</div>
+        <h3>Your Cart is Empty</h3>
+        <p>Looks like you haven't added anything yet. Discover our curated collections.</p>
+        <a href="shop.html" class="btn btn-primary btn-lg">Continue Shopping</a>
+      </div>`;
+    return;
+  }
+
+  const subtotal = Cart.getCartTotal();
+  let discount = 0;
+  let appliedCode = sessionStorage.getItem('discount_code');
+  let discountRate = appliedCode ? Cart.applyDiscount(appliedCode) : 0;
+  if (discountRate) discount = subtotal * discountRate;
+  const shipping = subtotal - discount >= 200 ? 0 : 12;
+  const total = subtotal - discount + shipping;
+
+  content.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:var(--spacing-3xl);align-items:start">
+      <div>
+        <table class="cart-table" aria-label="Cart items">
+          <thead>
+            <tr>
+              <th style="width:80px" aria-hidden="true"></th>
+              <th>Product</th>
+              <th>Size</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th aria-label="Remove"></th>
+            </tr>
+          </thead>
+          <tbody id="cart-tbody">
+            ${cartItems.map(item => `
+              <tr data-key="${item.key}">
+                <td><a href="product.html?id=${item.id}"><img src="${item.image}" alt="${item.name}" class="cart-item-img" loading="lazy"></a></td>
+                <td>
+                  <a href="product.html?id=${item.id}" class="cart-item-name">${item.name}</a>
+                  <div class="cart-item-meta">${item.category}</div>
+                  <div class="cart-item-meta" style="display:flex;align-items:center;gap:6px;margin-top:4px">
+                    <span style="width:12px;height:12px;border-radius:50%;background:${item.color};border:1px solid var(--color-border);display:inline-block"></span>
+                    ${item.color}
+                  </div>
+                </td>
+                <td><span style="font-size:0.88rem;background:var(--color-bg-tertiary);padding:4px 10px;border-radius:4px">${item.size}</span></td>
+                <td>
+                  <div class="qty-stepper" role="group" aria-label="Quantity for ${item.name}">
+                    <button class="qty-btn" onclick="updateQty('${item.key}', ${item.quantity - 1})" aria-label="Decrease">−</button>
+                    <input type="number" class="qty-input" value="${item.quantity}" min="1" max="10" onchange="updateQty('${item.key}', parseInt(this.value))" aria-label="Quantity">
+                    <button class="qty-btn" onclick="updateQty('${item.key}', ${item.quantity + 1})" aria-label="Increase">+</button>
+                  </div>
+                </td>
+                <td><span style="font-weight:600;color:var(--color-gold)">${formatPrice(item.price * item.quantity)}</span></td>
+                <td><button class="btn btn-danger btn-sm btn-icon" onclick="removeItem('${item.key}')" aria-label="Remove ${item.name}">✕</button></td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:space-between;margin-top:var(--spacing-xl);flex-wrap:wrap;gap:12px">
+          <a href="shop.html" class="btn btn-secondary">← Continue Shopping</a>
+          <button class="btn btn-danger btn-sm" onclick="clearAll()">Clear Cart</button>
+        </div>
+      </div>
+
+      <!-- Order Totals -->
+      <aside class="cart-totals" aria-label="Order summary">
+        <h2 style="font-family:var(--font-heading);font-size:1.3rem;margin-bottom:var(--spacing-lg)">Order Summary</h2>
+        <div class="totals-row"><label>Subtotal (${cartItems.reduce((s,i)=>s+i.quantity,0)} items)</label><span>${formatPrice(subtotal)}</span></div>
+        <div class="totals-row" id="discount-row" style="${discount?'':'display:none'}"><label style="color:var(--color-success)">Discount (${appliedCode})</label><span style="color:var(--color-success)">-${formatPrice(discount)}</span></div>
+        <div class="totals-row"><label>Shipping</label><span>${shipping === 0 ? '<span style="color:var(--color-success)">Free</span>' : formatPrice(shipping)}</span></div>
+        ${shipping > 0 ? `<p style="font-size:0.78rem;color:var(--color-text-dim);margin-top:-10px;padding-bottom:10px;border-bottom:1px solid var(--color-border)">Add ${formatPrice(200 - (subtotal - discount))} more for free shipping</p>` : ''}
+        <div class="totals-row total"><label>Total</label><span>${formatPrice(total)}</span></div>
+
+        <div style="margin:var(--spacing-lg) 0">
+          <label class="form-label">Discount Code</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" class="form-input" id="discount-input" placeholder="Enter code" value="${appliedCode||''}" aria-label="Discount code">
+            <button class="btn btn-secondary btn-sm" onclick="applyDiscount()" style="white-space:nowrap">Apply</button>
+          </div>
+          <p style="font-size:0.72rem;color:var(--color-text-dim);margin-top:6px">Try: LUXE10, LUXE20, WELCOME, VIP30</p>
+        </div>
+
+        <a href="checkout.html" class="btn btn-primary btn-full btn-lg" style="margin-bottom:12px">Proceed to Checkout →</a>
+        <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.75rem;color:var(--color-text-dim);margin-top:var(--spacing-sm)">
+          <span>🔒</span> Secure checkout · SSL encrypted
+        </div>
+        <div style="margin-top:var(--spacing-lg);padding-top:var(--spacing-md);border-top:1px solid var(--color-border)">
+          <p style="font-size:0.75rem;text-align:center;margin-bottom:10px;color:var(--color-text-dim)">Accepted payment methods</p>
+          <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+            ${['VISA','MC','AMEX','PayPal'].map(m => `<span style="padding:4px 10px;background:var(--color-bg-tertiary);border:1px solid var(--color-border);border-radius:4px;font-size:0.7rem;color:var(--color-text-muted)">${m}</span>`).join('')}
+          </div>
+        </div>
+      </aside>
+    </div>`;
+
+  // Responsive cart
+  if (window.innerWidth < 1024) {
+    const grid = content.querySelector('[style*="grid-template-columns"]');
+    if (grid) grid.style.gridTemplateColumns = '1fr';
+  }
+}
+
+function updateQty(key, qty) {
+  Cart.updateQuantity(key, qty);
+  renderCart();
+}
+function removeItem(key) {
+  Cart.removeFromCart(key);
+  renderCart();
+}
+function clearAll() {
+  if (confirm('Remove all items from cart?')) { Cart.clearCart(); renderCart(); }
+}
+function applyDiscount() {
+  const code = document.getElementById('discount-input').value.trim();
+  const rate = Cart.applyDiscount(code);
+  if (rate) {
+    sessionStorage.setItem('discount_code', code.toUpperCase());
+    showToast(`Discount code applied! ${Math.round(rate*100)}% off`, 'success', '🎉');
+    renderCart();
+  } else {
+    showToast('Invalid discount code', 'error', '✕');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', renderCart);
+window.addEventListener('cartUpdated', renderCart);
+</script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUXE — Luxury Fashion</title>
+  <meta name="description" content="Discover curated luxury fashion. Shop women's, men's and accessories from the world's finest designers.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<div id="navbar-mount"></div>
+
+<!-- HERO -->
+<main>
+<section class="hero-section" aria-label="Hero">
+  <div class="hero-bg-pattern"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">New Collection 2026</p>
+    <h1 class="hero-title">Dress with<br><em>Intention</em></h1>
+    <p class="hero-subtitle">Curated luxury fashion for those who understand that true style is never accidental.</p>
+    <div class="hero-cta">
+      <a href="shop.html" class="btn btn-primary btn-lg">Shop Now</a>
+      <a href="shop.html?cat=Women" class="btn btn-secondary btn-lg">Explore Collection</a>
+    </div>
+  </div>
+  <div class="hero-scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrapper" aria-hidden="true">
+  <div class="marquee-track">
+    <div class="marquee-item">Complimentary Shipping on Orders Over ₹2000 <span class="marquee-dot"></span></div>
+    <div class="marquee-item">New Arrivals Every Tuesday <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Handcrafted in Europe <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Free Returns Within 30 Days <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Exclusively Curated for You <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Complimentary Shipping on Orders Over ₹2000 <span class="marquee-dot"></span></div>
+    <div class="marquee-item">New Arrivals Every Tuesday <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Handcrafted in Europe <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Free Returns Within 30 Days <span class="marquee-dot"></span></div>
+    <div class="marquee-item">Exclusively Curated for You <span class="marquee-dot"></span></div>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section" aria-label="Shop by category">
+  <div class="container">
+    <div class="section-header">
+      <p class="eyebrow">Explore</p>
+      <h2>Shop by Category</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div id="categories-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--spacing-lg)"></div>
+  </div>
+</section>
+
+<!-- NEW ARRIVALS -->
+<section class="section" style="padding-top:0" aria-label="New arrivals">
+  <div class="container">
+    <div class="section-header">
+      <p class="eyebrow">Just In</p>
+      <h2>New Arrivals</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div id="new-arrivals-grid" class="product-grid" style="grid-template-columns:repeat(4,1fr)"></div>
+    <div style="text-align:center;margin-top:var(--spacing-2xl)">
+      <a href="shop.html" class="btn btn-ghost btn-lg">View All Products</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE BANNER -->
+<section class="section" style="padding:0">
+  <div style="background:linear-gradient(135deg, #1f1a0e 0%, #1a1a1a 50%, #0e1a1a 100%);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);">
+    <div class="container" style="padding-top:var(--spacing-3xl);padding-bottom:var(--spacing-3xl)">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--spacing-3xl);text-align:center">
+        <div class="animate-up-delay-1">
+          <div style="font-size:2.5rem;margin-bottom:var(--spacing-md)">✦</div>
+          <h3 style="font-size:1rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-gold);margin-bottom:var(--spacing-sm)">Artisan Crafted</h3>
+          <p style="font-size:0.88rem;max-width:220px;margin:0 auto">Every piece handcrafted by skilled artisans in European ateliers</p>
+        </div>
+        <div class="animate-up-delay-2">
+          <div style="font-size:2.5rem;margin-bottom:var(--spacing-md)">◈</div>
+          <h3 style="font-size:1rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-gold);margin-bottom:var(--spacing-sm)">Ethically Sourced</h3>
+          <p style="font-size:0.88rem;max-width:220px;margin:0 auto">Premium materials responsibly sourced with full supply chain transparency</p>
+        </div>
+        <div class="animate-up-delay-3">
+          <div style="font-size:2.5rem;margin-bottom:var(--spacing-md)">◇</div>
+          <h3 style="font-size:1rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-gold);margin-bottom:var(--spacing-sm)">Timeless Design</h3>
+          <p style="font-size:0.88rem;max-width:220px;margin:0 auto">Investment pieces designed to transcend seasons and trends</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" aria-label="Customer testimonials">
+  <div class="container container-sm">
+    <div class="section-header">
+      <p class="eyebrow">Reviews</p>
+      <h2>What Our Clients Say</h2>
+      <div class="section-divider"></div>
+    </div>
+    <div class="testimonials-wrapper">
+      <div class="testimonials-track" id="testimonials-track">
+        <div class="testimonial-slide">
+          <div style="color:var(--color-gold);font-size:1.5rem;margin-bottom:var(--spacing-lg)">★★★★★</div>
+          <blockquote class="testimonial-quote">"The Obsidian Wool Coat is the most exquisite piece I've ever owned. The craftsmanship is extraordinary — you can feel the quality in every stitch."</blockquote>
+          <p class="testimonial-author">Aditya Kashyap</p>
+          <p class="testimonial-location">Mumbai, India</p>
+        </div>
+        <div class="testimonial-slide">
+          <div style="color:var(--color-gold);font-size:1.5rem;margin-bottom:var(--spacing-lg)">★★★★★</div>
+          <blockquote class="testimonial-quote">"I've been shopping at LUXE for three years. The curation is impeccable, and the customer service goes far beyond what you'd expect."</blockquote>
+          <p class="testimonial-author">Sebastian Marchetti</p>
+          <p class="testimonial-location">Paris, France</p>
+        </div>
+        <div class="testimonial-slide">
+          <div style="color:var(--color-gold);font-size:1.5rem;margin-bottom:var(--spacing-lg)">★★★★★</div>
+          <blockquote class="testimonial-quote">"The Margaux Tote arrived beautifully packaged. It's investment-worthy — I've had mine for two years and it only gets better with age."</blockquote>
+          <p class="testimonial-author">Elena Vasquez</p>
+          <p class="testimonial-location">New York, USA</p>
+        </div>
+        <div class="testimonial-slide">
+          <div style="color:var(--color-gold);font-size:1.5rem;margin-bottom:var(--spacing-lg)">★★★★★</div>
+          <blockquote class="testimonial-quote">"Every piece tells a story. LUXE understands that luxury is not about logos — it's about provenance, material, and the quiet confidence of knowing."</blockquote>
+          <p class="testimonial-author">Hiroshi Tanaka</p>
+          <p class="testimonial-location">Tokyo, Japan</p>
+        </div>
+      </div>
+      <div class="testimonial-dots" id="testimonial-dots" role="tablist" aria-label="Testimonial navigation"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter-section" aria-label="Newsletter signup">
+  <div class="container">
+    <p class="eyebrow">Stay In the Know</p>
+    <h2>The LUXE Edit</h2>
+    <p style="max-width:440px;margin:var(--spacing-md) auto 0">Join our inner circle for early access to new arrivals, exclusive events, and curated style guides.</p>
+    <form class="newsletter-form" id="newsletter-form" novalidate aria-label="Newsletter signup form">
+      <input type="email" class="form-input" id="newsletter-email" placeholder="Your email address" aria-label="Email address" required>
+      <button type="submit" class="btn btn-primary">Subscribe</button>
+    </form>
+    <p style="font-size:0.75rem;color:var(--color-text-dim);margin-top:var(--spacing-sm)">By subscribing you agree to our Privacy Policy. Unsubscribe anytime.</p>
+  </div>
+</div>
+
+</main>
+
+<div id="footer-mount"></div>
+
+<script src="js/products.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/layout.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Render categories
+  const catGrid = document.getElementById('categories-grid');
+  if (catGrid) {
+    catGrid.innerHTML = categories.map(cat => `
+      <a href="shop.html?cat=${cat.name}" class="category-card" aria-label="Shop ${cat.name}">
+        <img src="${cat.image}" alt="${cat.name}" loading="lazy">
+        <div class="category-card-overlay">
+          <h3 class="category-card-title">${cat.name}</h3>
+          <p class="category-card-count">${cat.count} Items</p>
+          <span class="category-card-link">Shop Now →</span>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  // Render new arrivals (first 8 newest/featured)
+  const newGrid = document.getElementById('new-arrivals-grid');
+  if (newGrid) {
+    const newProducts = [...products].filter(p => p.newest || p.featured).slice(0, 8);
+    newGrid.innerHTML = newProducts.map(renderProductCard).join('');
+  }
+
+  // Testimonials carousel
+  const track = document.getElementById('testimonials-track');
+  const dotsContainer = document.getElementById('testimonial-dots');
+  if (track && dotsContainer) {
+    const slides = track.querySelectorAll('.testimonial-slide');
+    let current = 0;
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = `testimonial-dot${i === 0 ? ' active' : ''}`;
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-selected', i === 0);
+      dot.setAttribute('aria-label', `Testimonial ${i + 1}`);
+      dot.onclick = () => goTo(i);
+      dotsContainer.appendChild(dot);
+    });
+    function goTo(n) {
+      current = n;
+      track.style.transform = `translateX(-${n * 100}%)`;
+      dotsContainer.querySelectorAll('.testimonial-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === n);
+        d.setAttribute('aria-selected', i === n);
+      });
+    }
+    const autoSlide = setInterval(() => goTo((current + 1) % slides.length), 5000);
+    track.closest('.testimonials-wrapper').addEventListener('mouseenter', () => clearInterval(autoSlide));
+  }
+
+  // Newsletter
+  document.getElementById('newsletter-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const email = document.getElementById('newsletter-email').value;
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showToast('Thank you for subscribing!', 'success', '✉️');
+      document.getElementById('newsletter-email').value = '';
+    } else {
+      showToast('Please enter a valid email address.', 'error', '✕');
+    }
+  });
+
+  // Animate on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.product-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+});
+</script>
+</body>
+</html>

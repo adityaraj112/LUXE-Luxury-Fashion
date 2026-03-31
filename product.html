@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — LUXE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css"><link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css"><link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+<div id="navbar-mount"></div>
+<main class="page-wrapper">
+  <div class="container" style="padding-top:var(--spacing-xl);padding-bottom:var(--spacing-4xl)">
+    <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
+    <div id="product-content"></div>
+    <!-- You May Also Like -->
+    <section style="margin-top:var(--spacing-4xl)">
+      <div class="section-header" style="text-align:left">
+        <p class="eyebrow">Curated for You</p>
+        <h2>You May Also Like</h2>
+        <div class="section-divider left"></div>
+      </div>
+      <div id="related-grid" class="product-grid" style="grid-template-columns:repeat(4,1fr)"></div>
+    </section>
+  </div>
+</main>
+<div id="footer-mount"></div>
+<script src="js/products.js"></script><script src="js/cart.js"></script><script src="js/ui.js"></script><script src="js/layout.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id')) || 1;
+  const product = products.find(p => p.id === id) || products[0];
+
+  document.title = `${product.name} — LUXE`;
+
+  // Breadcrumb
+  document.getElementById('breadcrumb').innerHTML = `
+    <a href="index.html">Home</a><span class="breadcrumb-sep">›</span>
+    <a href="shop.html">Shop</a><span class="breadcrumb-sep">›</span>
+    <a href="shop.html?cat=${product.category}">${product.category}</a><span class="breadcrumb-sep">›</span>
+    <span>${product.name}</span>`;
+
+  const discount = product.originalPrice ? Math.round((1 - product.price / product.originalPrice) * 100) : null;
+  let selectedSize = product.sizes[0];
+  let selectedColor = product.colors[0];
+  let qty = 1;
+  let mainImgIdx = 0;
+
+  document.getElementById('product-content').innerHTML = `
+    <div class="product-detail-grid">
+      <!-- Gallery -->
+      <div class="product-gallery">
+        <div class="gallery-thumbnails">
+          ${product.images.map((img, i) => `
+            <img src="${img}" alt="${product.name} view ${i+1}" class="gallery-thumb${i===0?' active':''}" loading="lazy" data-idx="${i}" tabindex="0" role="button" aria-label="View image ${i+1}">`).join('')}
+        </div>
+        <div class="gallery-main">
+          <img id="main-image" src="${product.images[0]}" alt="${product.name}" class="gallery-main-img">
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="animate-up">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:var(--spacing-sm)">
+          <span style="font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--color-gold)">${product.category}</span>
+          ${product.badge ? `<span class="product-card-badge badge-${product.badge}" style="position:static">${product.badge === 'sale' && discount ? `-${discount}%` : product.badge}</span>` : ''}
+        </div>
+        <h1 style="font-size:clamp(1.8rem,3vw,2.6rem);margin-bottom:var(--spacing-md)">${product.name}</h1>
+        
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:var(--spacing-lg)">
+          <span class="stars" style="font-size:1.1rem">${renderStars(product.rating)}</span>
+          <span style="font-size:0.85rem;color:var(--color-text-muted)">${product.rating} · ${product.reviews} reviews</span>
+          <a href="#reviews" style="font-size:0.82rem;color:var(--color-gold);text-decoration:underline">Read reviews</a>
+        </div>
+
+        <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:var(--spacing-xl)">
+          <span style="font-size:2rem;font-weight:600;color:var(--color-gold);font-family:var(--font-heading)">${formatPrice(product.price)}</span>
+          ${product.originalPrice ? `<span style="font-size:1.2rem;text-decoration:line-through;color:var(--color-text-dim)">${formatPrice(product.originalPrice)}</span>
+          <span style="font-size:0.85rem;color:#e53935;background:rgba(229,57,53,0.1);padding:2px 8px;border-radius:4px">Save ${discount}%</span>` : ''}
+        </div>
+
+        <div class="gold-line"></div>
+
+        <!-- Size -->
+        <div style="margin-bottom:var(--spacing-xl)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+            <span style="font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase">Size: <span id="selected-size" style="color:var(--color-gold)">${selectedSize}</span></span>
+            <a href="#" style="font-size:0.78rem;color:var(--color-gold);text-decoration:underline">Size Guide</a>
+          </div>
+          <div class="size-selector" id="size-selector">
+            ${product.sizes.map(s => `<button class="size-btn${s===selectedSize?' active':''}" data-size="${s}" aria-pressed="${s===selectedSize}">${s}</button>`).join('')}
+          </div>
+        </div>
+
+        <!-- Color -->
+        ${product.colors.length > 1 ? `
+        <div style="margin-bottom:var(--spacing-xl)">
+          <span style="font-size:0.78rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:12px">Color</span>
+          <div class="color-selector" id="color-selector">
+            ${product.colors.map((c,i) => `<div class="color-swatch${i===0?' active':''}" style="background:${c}" data-color="${c}" title="${c}" tabindex="0" role="button" aria-label="Color ${c}" aria-pressed="${i===0}"></div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Quantity + Actions -->
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:var(--spacing-md);flex-wrap:wrap">
+          <div class="qty-stepper" role="group" aria-label="Quantity">
+            <button class="qty-btn" id="qty-minus" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-input" id="qty-input" value="1" min="1" max="10" aria-label="Quantity">
+            <button class="qty-btn" id="qty-plus" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn btn-primary" style="flex:1;min-width:180px" id="add-to-cart-btn">Add to Cart</button>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:var(--spacing-xl)">
+          <button class="btn btn-ghost btn-full" id="buy-now-btn">Buy Now</button>
+          <button class="btn btn-secondary btn-icon" id="wishlist-btn" data-wishlist-id="${product.id}" aria-label="Add to wishlist" aria-pressed="false">♥</button>
+        </div>
+
+        <!-- Trust signals -->
+        <div style="display:flex;flex-direction:column;gap:10px;padding:var(--spacing-lg);background:var(--color-bg-secondary);border-radius:var(--radius-md);border:1px solid var(--color-border)">
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--color-text-muted)">
+            <span style="color:var(--color-gold)">✓</span> Free shipping on orders over ₹2000
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--color-text-muted)">
+            <span style="color:var(--color-gold)">✓</span> Free returns within 30 days
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.82rem;color:var(--color-text-muted)">
+            <span style="color:var(--color-gold)">✓</span> Authenticity guaranteed
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="margin-top:var(--spacing-3xl)">
+      <div class="tabs-wrapper">
+        <div class="tabs-nav" role="tablist">
+          <button class="tab-btn active" data-tab="description" role="tab" aria-selected="true">Description</button>
+          <button class="tab-btn" data-tab="reviews" role="tab" aria-selected="false">Reviews (${product.reviews})</button>
+          <button class="tab-btn" data-tab="shipping" role="tab" aria-selected="false">Shipping Info</button>
+        </div>
+        <div data-tab-content="description" class="tab-content active" role="tabpanel">
+          <p style="max-width:700px;line-height:1.8;font-size:0.95rem">${product.description}</p>
+          <div style="margin-top:var(--spacing-xl);display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--spacing-md)">
+            <div style="padding:var(--spacing-md);background:var(--color-bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--color-border)">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--color-gold);margin-bottom:6px">Material</p>
+              <p style="font-size:0.88rem;color:var(--color-text)">Premium Italian Fabric</p>
+            </div>
+            <div style="padding:var(--spacing-md);background:var(--color-bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--color-border)">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--color-gold);margin-bottom:6px">Origin</p>
+              <p style="font-size:0.88rem;color:var(--color-text)">Made in Italy</p>
+            </div>
+            <div style="padding:var(--spacing-md);background:var(--color-bg-secondary);border-radius:var(--radius-sm);border:1px solid var(--color-border)">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--color-gold);margin-bottom:6px">Care</p>
+              <p style="font-size:0.88rem;color:var(--color-text)">Dry clean only</p>
+            </div>
+          </div>
+        </div>
+        <div data-tab-content="reviews" id="reviews" class="tab-content" role="tabpanel">
+          <div style="display:flex;align-items:center;gap:var(--spacing-3xl);margin-bottom:var(--spacing-xl);flex-wrap:wrap">
+            <div style="text-align:center">
+              <div style="font-family:var(--font-heading);font-size:4rem;color:var(--color-gold)">${product.rating}</div>
+              <div class="stars" style="font-size:1.3rem">${renderStars(product.rating)}</div>
+              <p style="font-size:0.82rem;margin-top:4px">${product.reviews} reviews</p>
+            </div>
+            <div style="flex:1;min-width:200px">
+              ${[5,4,3,2,1].map(s => {
+                const pct = s === 5 ? 65 : s === 4 ? 25 : s === 3 ? 7 : s === 2 ? 2 : 1;
+                return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                  <span style="font-size:0.82rem;color:var(--color-gold);min-width:20px">${s}★</span>
+                  <div style="flex:1;height:6px;background:var(--color-border);border-radius:3px;overflow:hidden">
+                    <div style="width:${pct}%;height:100%;background:var(--color-gold);border-radius:3px"></div>
+                  </div>
+                  <span style="font-size:0.78rem;color:var(--color-text-dim);min-width:28px">${pct}%</span>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-lg)">
+            ${[
+              { name:'Sophie A.', rating:5, date:'2 weeks ago', text:'Absolutely stunning quality. The fabric feels incredible and the fit is perfect. Worth every penny.', verified:true },
+              { name:'Marcus T.', rating:5, date:'1 month ago', text:'Ordered as a gift and the recipient was overjoyed. The packaging alone feels like a luxury experience.', verified:true },
+              { name:'Isabelle M.', rating:4, date:'1 month ago', text:'Beautiful piece. Sizing runs slightly large — I recommend going one size down. Otherwise perfect.', verified:false },
+            ].map(r => `
+              <div style="padding:var(--spacing-lg);background:var(--color-bg-secondary);border-radius:var(--radius-md);border:1px solid var(--color-border)">
+                <div style="display:flex;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+                  <div>
+                    <span style="font-weight:600">${r.name}</span>
+                    ${r.verified ? `<span style="font-size:0.72rem;color:var(--color-success);margin-left:8px;background:rgba(76,175,80,0.1);padding:2px 8px;border-radius:4px">✓ Verified</span>` : ''}
+                  </div>
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span class="stars" style="font-size:0.9rem">${renderStars(r.rating)}</span>
+                    <span style="font-size:0.78rem;color:var(--color-text-dim)">${r.date}</span>
+                  </div>
+                </div>
+                <p style="font-size:0.9rem;line-height:1.7">${r.text}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div data-tab-content="shipping" class="tab-content" role="tabpanel">
+          <div style="display:flex;flex-direction:column;gap:var(--spacing-lg);max-width:600px">
+            ${[
+              { icon:'🚀', title:'Standard Shipping', detail:'5–7 business days · Free on orders over ₹2000, otherwise ₹100' },
+              { icon:'⚡', title:'Express Shipping', detail:'2–3 business days · $28 flat rate' },
+              { icon:'🌍', title:'International', detail:'7–14 business days · Rates calculated at checkout' },
+              { icon:'↩️', title:'Free Returns', detail:'Return within 30 days · Items must be unworn with tags' },
+            ].map(s => `
+              <div style="display:flex;gap:var(--spacing-lg);padding:var(--spacing-lg);background:var(--color-bg-secondary);border-radius:var(--radius-md);border:1px solid var(--color-border)">
+                <span style="font-size:1.6rem">${s.icon}</span>
+                <div>
+                  <h4 style="font-size:0.95rem;margin-bottom:4px">${s.title}</h4>
+                  <p style="font-size:0.85rem">${s.detail}</p>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  // Related products
+  const related = products.filter(p => p.id !== product.id && (p.category === product.category || p.featured)).slice(0, 4);
+  document.getElementById('related-grid').innerHTML = related.map(renderProductCard).join('');
+
+  // Interactions
+  document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+    thumb.addEventListener('click', () => {
+      document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+      thumb.classList.add('active');
+      const img = document.getElementById('main-image');
+      img.style.opacity = '0';
+      setTimeout(() => { img.src = product.images[thumb.dataset.idx]; img.style.opacity = '1'; }, 200);
+    });
+  });
+
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-pressed', 'true');
+      selectedSize = btn.dataset.size;
+      document.getElementById('selected-size').textContent = selectedSize;
+    });
+  });
+
+  document.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      document.querySelectorAll('.color-swatch').forEach(s => { s.classList.remove('active'); s.setAttribute('aria-pressed', 'false'); });
+      sw.classList.add('active'); sw.setAttribute('aria-pressed', 'true');
+      selectedColor = sw.dataset.color;
+    });
+  });
+
+  const qtyInput = document.getElementById('qty-input');
+  document.getElementById('qty-minus').addEventListener('click', () => { if (qty > 1) { qty--; qtyInput.value = qty; } });
+  document.getElementById('qty-plus').addEventListener('click', () => { if (qty < 10) { qty++; qtyInput.value = qty; } });
+  qtyInput.addEventListener('change', () => { qty = Math.min(10, Math.max(1, parseInt(qtyInput.value)||1)); qtyInput.value = qty; });
+
+  document.getElementById('add-to-cart-btn').addEventListener('click', () => Cart.addToCart(product.id, selectedSize, selectedColor, qty));
+  document.getElementById('buy-now-btn').addEventListener('click', () => {
+    Cart.addToCart(product.id, selectedSize, selectedColor, qty);
+    window.location.href = 'checkout.html';
+  });
+
+  const wlBtn = document.getElementById('wishlist-btn');
+  wlBtn.addEventListener('click', () => {
+    Wishlist.toggle(product.id);
+    wlBtn.classList.toggle('wishlisted', Wishlist.isWishlisted(product.id));
+  });
+  wlBtn.classList.toggle('wishlisted', Wishlist.isWishlisted(product.id));
+
+  Wishlist.updateButtons();
+});
+</script>
+</body>
+</html>
